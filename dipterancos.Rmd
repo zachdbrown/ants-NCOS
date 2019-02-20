@@ -1,0 +1,33 @@
+---
+title: "dipterancos"
+author: "Rachel Behm"
+date: "February 19, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Load packages
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+```
+
+2. load and wrangle data
+```{r}
+alldiptera<- read_csv("alldiptera.csv")
+
+
+#make df way less obnoxious
+dipsimple <-alldiptera %>%
+  select(
+    order, scientificName, year, eventDate, samplingProtocol, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy)
+
+
+#show just NCOS since no labelproject column
+dipncos <- dipsimple %>%
+  filter(recordedBy == "UCSB Arthropod Survey")
+```
+
