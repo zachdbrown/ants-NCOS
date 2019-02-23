@@ -17,17 +17,24 @@ library(RColorBrewer)
 
 2. load and wrangle data
 ```{r}
-alldiptera<- read_csv("alldiptera.csv")
+alldiptera<- read_csv("alldip2232019.csv")
 
 
 #make df way less obnoxious
 dipsimple <-alldiptera %>%
   select(
-    order, scientificName, year, eventDate, samplingProtocol, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy)
+    order, family, scientificName, year, eventDate, samplingProtocol, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy)
 
 
 #show just NCOS since no labelproject column
 dipncos <- dipsimple %>%
   filter(recordedBy == "UCSB Arthropod Survey")
+```
+
+3. data exploration
+```{r}
+ncosdipbar <- dipncos %>% filter(family != "NA")
+
+ggplot(ncosdipbar) + geom_bar(aes(x = family))
 ```
 
