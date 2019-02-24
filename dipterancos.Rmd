@@ -13,28 +13,55 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(RColorBrewer)
+library(forcats)
 ```
 
 2. load and wrangle data
 ```{r}
-alldiptera<- read_csv("alldip2232019.csv")
+alldiptera<- read_csv("ncosdipwithhabitatedit.csv")
 
 
 #make df way less obnoxious
-dipsimple <-alldiptera %>%
+dipncos <-alldiptera %>%
   select(
-    order, family, scientificName, year, eventDate, samplingProtocol, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy)
+    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy) 
 
 
-#show just NCOS since no labelproject column
-dipncos <- dipsimple %>%
-  filter(recordedBy == "UCSB Arthropod Survey")
 ```
 
 3. data exploration
 ```{r}
+#get rid of giganctic NA column for things not yet ID'd
 ncosdipbar <- dipncos %>% filter(family != "NA")
 
-ggplot(ncosdipbar) + geom_bar(aes(x = family))
+#fcy_infreq makes the bars go in decreasong order
+familyabund<- ggplot(mutate
+                     (ncosdipbar, family = fct_infreq(family))) + 
+  geom_bar(
+    aes(x = family, fill= family)) +
+  labs(x="Family-level Identification", y="Number of specimens collected", title = "Diptera abundance pre-restoration") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()
+        )
+#theme stuff makes it so theres no x axis info
+
+familyabund
+########################################################################################
+
+traptype <- familyabund + facet_wrap(~samplingProtocol) +labs(title = "Diptera abundance by sampling protocol")
+traptype
+
+########################################################################################
+
+yeardip <- familyabund + facet_wrap(~verbatimEventDate) + labs(title = "Diptera abundance by date")
+yeardip
+
+#######################################################################################
+#these habitats are inputed terribly ill have to manually rename them in the csv
+
+
+habdip <- familyabund + facet_wrap(~habitat) + labs(title = "Diptera abundance by habitat")
+habdip
 ```
 
