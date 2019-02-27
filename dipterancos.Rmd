@@ -1,7 +1,7 @@
 ---
-title: "dipterancos"
-author: "Rachel Behm"
-date: "February 19, 2019"
+title: "antncos"
+author: "Zach Brown"
+date: "February 26, 2019"
 output: html_document
 ---
 
@@ -18,50 +18,52 @@ library(forcats)
 
 2. load and wrangle data
 ```{r}
-alldiptera<- read_csv("ncosdipwithhabitatedit.csv")
+allsbcoants<- read_csv("antssbco.csv")
 
 
 #make df way less obnoxious
-dipncos <-alldiptera %>%
+antssimple <-allsbcoants %>%
   select(
-    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy) 
+    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount) 
 
 
+antsncos<-antssimple %>%
+  filter(recordedBy =="UCSB Arthropod Survey")
 ```
 
 3. data exploration
 ```{r}
-#get rid of giganctic NA column for things not yet ID'd
-ncosdipbar <- dipncos %>% filter(family != "NA")
 
-#fcy_infreq makes the bars go in decreasong order
-familyabund<- ggplot(mutate
-                     (ncosdipbar, family = fct_infreq(family))) + 
+
+#fct_infreq makes the bars go in decreasong order
+scinameabund<- ggplot(mutate
+                     (antsncos, scientificName = fct_infreq(scientificName))) + 
   geom_bar(
-    aes(x = family, fill= family)) +
-  labs(x="Family-level Identification", y="Number of specimens collected", title = "Diptera abundance pre-restoration") +
+    aes(x = scientificName, fill= scientificName)
+    ) +
+  labs(x="Scientific Name", y="Number of specimens collected", title = "Ants Abundance Before Restoration") +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()
         )
 #theme stuff makes it so theres no x axis info
 
-familyabund
+scinameabund
 ########################################################################################
 
-traptype <- familyabund + facet_wrap(~samplingProtocol) +labs(title = "Diptera abundance by sampling protocol")
+traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants by Sampling Protocol")
 traptype
 
 ########################################################################################
 
-yeardip <- familyabund + facet_wrap(~verbatimEventDate) + labs(title = "Diptera abundance by date")
-yeardip
+yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants by Month")
+yearant
 
 #######################################################################################
 #these habitats are inputed terribly ill have to manually rename them in the csv
 
 
-habdip <- familyabund + facet_wrap(~habitat) + labs(title = "Diptera abundance by habitat")
-habdip
+habant <- scinameabund + facet_wrap(~habitat) + labs(title = "Ant abundance by habitat")
+habant
 ```
 
