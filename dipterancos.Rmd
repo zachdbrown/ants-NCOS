@@ -24,7 +24,22 @@ allsbcoants<- read_csv("antssbco.csv")
 #make df way less obnoxious
 antssimple <-allsbcoants %>%
   select(
-    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount) 
+    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount) %>%
+  mutate(
+    monthname = case_when(
+      month == 3 ~ "March",
+      month == 4 ~ "April",
+      month == 5 ~ "May",
+      month == 6 ~ "June",
+      month == 7 ~ "July"
+    )
+  ) %>%
+  mutate(
+    samplingProtocolname = case_when(
+      samplingProtocol == "Pitfall" ~ "Pitfall Trap",
+      samplingProtocol == "Pitfall trap" ~ "Pitfall Trap"
+    )
+  )
 
 
 antsncos<-antssimple %>%
@@ -41,7 +56,7 @@ scinameabund<- ggplot(mutate
   geom_bar(
     aes(x = scientificName, fill= scientificName)
     ) +
-  labs(x="Scientific Name", y="Number of specimens collected", title = "Ants Abundance Before Restoration") +
+  labs(x="Scientific Name", y="Number of specimens collected", title = "Ant Abundance Before Restoration") +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()
@@ -56,7 +71,7 @@ traptype
 
 ########################################################################################
 
-yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants by Month")
+yearant <- scinameabund + facet_wrap(~monthname) + labs(title = "Ants by Month")
 yearant
 
 #######################################################################################
