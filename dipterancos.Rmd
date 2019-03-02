@@ -25,8 +25,10 @@ allsbcoants<- read_csv("newsbcoants.csv")
 
 #make df way less obnoxious
 antssimple <-allsbcoants %>%
+#selecting columns to keep for data analysis
   select(
     order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount)%>%
+#changing months from numerical value to actual name
   mutate(
     monthname = case_when(
       month == 1 ~ "January",
@@ -38,23 +40,29 @@ antssimple <-allsbcoants %>%
       month == 7 ~ "July"
     )
   ) %>%
+#trying to order months chronologically, still not working
   mutate(order(monthname, na.last = TRUE, decreasing = FALSE,
       method = c("auto", "shell", "radix")))%>%
+#combining trap types
   mutate(
     samplingProtocolname = case_when(
       samplingProtocol == "Pitfall" ~ "Pitfall Trap",
       samplingProtocol == "Pitfall trap" ~ "Pitfall Trap"))
 
+#trying to sum individual count
+sum(antssimple, individualCount)
+
 antsncos<-antssimple %>%
+#excluded anything that doesnt have UCSB Arthropod Survey
   filter(recordedBy =="UCSB Arthropod Survey")%>%
+#exluded anything that doesn't have a genera determination
   filter(scientificName !="Formicidae")
 ```
 
 3. data exploration
 ```{r}
+#this graph looks nice, needs actual count of L. humile
 
-
-#fct_infreq makes the bars go in decreasong order
 scinameabund<- ggplot(mutate
                      (antsncos, scientificName = fct_infreq(scientificName))) + 
   geom_bar(
@@ -65,22 +73,22 @@ scinameabund<- ggplot(mutate
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()
         )
-#theme stuff makes it so theres no x axis info
 
 scinameabund
 ########################################################################################
+#this graph looks nice, needs to be updated with actual counts for L. humile
 
 traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants by Sampling Protocol")
 traptype
 
 ########################################################################################
+#months need to be ordered chronologically
 
 yearant <- scinameabund + facet_wrap(~monthname) + labs(title = "Ants by Month")
 yearant
 
 #######################################################################################
-#these habitats are inputed terribly ill have to manually rename them in the csv
-
+#Habitats need to be condensed
 
 habant <- scinameabund + facet_wrap(~habitat) + labs(title = "Ant abundance by habitat")
 habant
