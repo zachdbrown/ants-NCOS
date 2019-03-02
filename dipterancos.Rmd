@@ -28,17 +28,6 @@ antssimple <-allsbcoants %>%
 #selecting columns to keep for data analysis
   select(
     order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount)%>%
-#changing months from numerical value to actual name
-  mutate(
-    monthname = case_when(
-      month == 1 ~ "January",
-      month == 2 ~ "February",
-      month == 3 ~ "March",
-      month == 4 ~ "April",
-      month == 5 ~ "May",
-      month == 6 ~ "June",
-      month == 7 ~ "July",
-      month == 8 ~ "August"))%>%
 #combining trap types
   mutate(
     samplingProtocolname = case_when(
@@ -116,10 +105,13 @@ traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants by 
 traptype
 
 ########################################################################################
-#months need to be ordered chronologically
+#Plot of ants by month
 
-yearant <- scinameabund + facet_wrap(~monthname) + labs(title = "Ants by Month")
+yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants by Month")
 yearant
+
+#puts ants in chronological order, need names
+antsncos$month = factor(antsncos$month, levels=month.name)
 
 #######################################################################################
 #Habitats need to be condensed
