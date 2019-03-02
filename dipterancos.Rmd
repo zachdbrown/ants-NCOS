@@ -14,19 +14,23 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(RColorBrewer)
 library(forcats)
+library(lubridate)
+library(dbplyr)
 ```
 
 2. load and wrangle data
 ```{r}
-allsbcoants<- read_csv("antssbco.csv")
+allsbcoants<- read_csv("newsbcoants.csv")
 
 
 #make df way less obnoxious
 antssimple <-allsbcoants %>%
   select(
-    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount) %>%
+    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount)%>%
   mutate(
     monthname = case_when(
+      month == 1 ~ "January",
+      month == 2 ~ "February",
       month == 3 ~ "March",
       month == 4 ~ "April",
       month == 5 ~ "May",
@@ -34,16 +38,16 @@ antssimple <-allsbcoants %>%
       month == 7 ~ "July"
     )
   ) %>%
+  mutate(order(monthname, na.last = TRUE, decreasing = FALSE,
+      method = c("auto", "shell", "radix")))%>%
   mutate(
     samplingProtocolname = case_when(
       samplingProtocol == "Pitfall" ~ "Pitfall Trap",
-      samplingProtocol == "Pitfall trap" ~ "Pitfall Trap"
-    )
-  )
-
+      samplingProtocol == "Pitfall trap" ~ "Pitfall Trap"))
 
 antsncos<-antssimple %>%
-  filter(recordedBy =="UCSB Arthropod Survey")
+  filter(recordedBy =="UCSB Arthropod Survey")%>%
+  filter(scientificName !="Formicidae")
 ```
 
 3. data exploration
