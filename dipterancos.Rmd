@@ -27,12 +27,10 @@ allsbcoants<- read_csv("newsbcoants.csv")
 antssimple <-allsbcoants %>%
 #selecting columns to keep for data analysis
   select(
-    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount)%>%
-#combining trap types
-  mutate(
-    samplingProtocolname = case_when(
-      samplingProtocol == "Pitfall" ~ "Pitfall Trap",
-      samplingProtocol == "Pitfall trap" ~ "Pitfall Trap"))
+    order, family, scientificName, year, month, eventDate, verbatimEventDate, samplingProtocol, habitat, country, stateProvince, county, municipality, decimalLatitude, decimalLongitude, recordedBy, individualCount)
+
+#puts months in order numerically and abbr
+antssimple$month = factor(antssimple$month, levels = month.name, labels = month.abb)
 
 #sum of all individual ants
 sumant <- sum(antssimple$individualCount, na.rm = FALSE)
@@ -84,14 +82,14 @@ sumhypo<-sum(hypo$individualCount)
 
 3. data exploration
 ```{r}
-#this graph looks nice, needs actual count of L. humile
+#Graph of each genus of ant with actual counts
 
 scinameabund<- ggplot(mutate
                      (antsncos, scientificName = fct_infreq(scientificName))) + 
   geom_bar(
-    aes(x = scientificName, fill= scientificName)
+    aes(x = scientificName, fill= scientificName, weight=individualCount)
     ) +
-  labs(x="Scientific Name", y="Number of Individual Occurrences", title = "Ant Abundance Before Restoration") +
+  labs(x="Scientific Name", y="Number of Individual Ants", title = "Collected Ants Before Restoration") +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()
@@ -99,19 +97,16 @@ scinameabund<- ggplot(mutate
 
 scinameabund
 ########################################################################################
-#this graph looks nice, needs to be updated with actual counts for L. humile
+#Bar plot of trap type with actual counts
 
-traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants by Sampling Protocol")
+traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants Collected by Trap")
 traptype
 
 ########################################################################################
 #Plot of ants by month
 
-yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants by Month")
+yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants Collected by Month")
 yearant
-
-#puts ants in chronological order, need names
-antsncos$month = factor(antsncos$month, levels=month.name)
 
 #######################################################################################
 #Habitats need to be condensed
