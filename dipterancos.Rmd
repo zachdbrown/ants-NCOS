@@ -115,5 +115,10 @@ habant <- scinameabund + facet_wrap(~habitat) + labs(title = "Ant abundance by h
 habant
 
 #######################################################################################
+#Histogram of ant occurences
+
+ggplot(allsbcoants, aes(x = year)) +
+      geom_histogram(binwidth=0.5, fill="mediumorchid4", na.rm = FALSE)+
+      theme_bw() + labs(x= "Year Collected", y= "Number of Occurences", title= "Specimen Collection Events in the Last 70 Years (1949-2019)")
 ```
 
