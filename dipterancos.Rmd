@@ -32,7 +32,7 @@ antssimple <-allsbcoants %>%
 #puts months in order numerically and abbr
 antssimple$month = factor(antssimple$month, levels = month.name, labels = month.abb)
 
-#sum of all individual ants
+#sum of all individual ants from NCOS
 sumant <- sum(antssimple$individualCount, na.rm = FALSE)
 
 antsncos<-antssimple %>%
@@ -41,6 +41,11 @@ antsncos<-antssimple %>%
 #exluded anything that doesn't have a genera level determination
   filter(scientificName !="Formicidae")
 
+#Filters out ants not identified to genus
+antssimplegenera<-antssimple%>%
+  filter(scientificName !="Formicidae")%>%
+  filter(scientificName !="Myrmicinae")
+
 #sum of all ants in ncos
 sumantncos <- sum(antsncos$individualCount, na.rm = FALSE)
 
@@ -48,31 +53,31 @@ sumantncos <- sum(antsncos$individualCount, na.rm = FALSE)
 antstotalncos<-antsncos %>%
   select(scientificName, individualCount)
 
-#Temnothorax dataframe only
+#Temnothorax dataframe only, NCOS
 temno<-antstotalncos%>%
   filter(scientificName == "Temnothorax")
 #sum of individual Temnothorax
 sumtemno<-sum(temno$individualCount)
 
-#L. humile dataframe only
+#L. humile dataframe only, NCOS
 lhumile<-antstotalncos%>%
   filter(scientificName=="Linepithema humile")
 #sum of individual L. humile
 sumlhumile<-sum(lhumile$individualCount)
 
-#Solenopsis dataframe only
+#Solenopsis dataframe only, NCOS
 solenopsis<-antstotalncos%>%
   filter(scientificName=="Solenopsis")
 #sum of individual Solenopsis
 sumsol<-sum(solenopsis$individualCount)
 
-#Monomorium dataframe only
+#Monomorium dataframe only, NCOS
 mono<-antstotalncos%>%
   filter(scientificName=="Monomorium")
 #sum of individual Monomorium
 summono<-sum(mono$individualCount)
 
-#Hypoponera dataframe only
+#Hypoponera dataframe only, NCOS
 hypo<-antstotalncos%>%
   filter(scientificName=="Hypoponera")
 #sum of individual Hypoponera
@@ -115,10 +120,10 @@ habant <- scinameabund + facet_wrap(~habitat) + labs(title = "Ant abundance by h
 habant
 
 #######################################################################################
-#Histogram of ant occurences
+#Histogram of ant occurences and genus
 
-ggplot(allsbcoants, aes(x = year)) +
-      geom_histogram(binwidth=0.5, fill="mediumorchid4", na.rm = FALSE)+
-      theme_bw() + labs(x= "Year Collected", y= "Number of Occurences", title= "Specimen Collection Events in the Last 70 Years (1949-2019)")
+ggplot(antssimplegenera, aes(x = year, fill=scientificName)) +
+      geom_histogram(position = "identity", alpha = 0.5, binwidth=0.5, na.rm = FALSE, show.legend = FALSE) + 
+  theme_bw() + labs(x= "Year Collected", y= "Number of Occurences", title = "Specimens Collected in Last 70 years (1949-2019)")
 ```
 
