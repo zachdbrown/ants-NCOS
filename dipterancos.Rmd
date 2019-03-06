@@ -92,25 +92,33 @@ sumhypo<-sum(hypo$individualCount)
 scinameabund<- ggplot(mutate
                      (antsncos, scientificName = fct_infreq(scientificName))) + 
   geom_bar(
-    aes(x = scientificName, fill= scientificName, weight=individualCount)
-    ) +
+    aes(x = scientificName, fill= scientificName, weight=individualCount))+
   labs(x="Scientific Name", y="Number of Individual Ants", title = "Collected Ants Before Restoration") +
-  theme(axis.title.x=element_blank(),
+  theme_bw()+
+  theme(legend.position = "top",
+        legend.title = element_blank(),
+        panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()
-        )
+        axis.ticks.x=element_blank())+
+  scale_y_continuous(expand = c(0,0), limits = c(0,1600))
 
 scinameabund
 ########################################################################################
 #Bar plot of trap type with actual counts
 
-traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants Collected by Trap")
+traptype <- scinameabund + facet_wrap(~samplingProtocol) +labs(title = "Ants Collected by Trap")+
+  scale_y_continuous(expand = c(0,0), limits = c(0,800))
 traptype
 
 ########################################################################################
 #Plot of ants by month
 
-yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants Collected by Month")
+yearant <- scinameabund + facet_wrap(~month) + labs(title = "Ants Collected by Month")+
+  scale_y_continuous(expand = c(0,0), limits = c(0,900))
 yearant
 
 #######################################################################################
@@ -123,7 +131,20 @@ habant
 #Histogram of ant occurences and genus
 
 ggplot(antssimplegenera, aes(x = year, fill=scientificName)) +
-      geom_histogram(position = "identity", alpha = 0.5, binwidth=0.5, na.rm = FALSE, show.legend = FALSE) + 
-  theme_bw() + labs(x= "Year Collected", y= "Number of Occurences", title = "Specimens Collected in Last 70 years (1949-2019)")
+      geom_histogram(position = "identity", binwidth=0.5, na.rm = FALSE, show.legend = FALSE)+
+  theme_bw()+
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  labs(x= "Year Collected", y= "Number of Occurences", title = "Specimens Collected in Last 70 years (1949-2019)")+
+  scale_y_continuous(expand = c(0,0), limits = c(0,150))
+
+#######################################################################################
+
+
 ```
 
