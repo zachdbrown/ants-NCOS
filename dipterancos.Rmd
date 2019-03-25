@@ -20,7 +20,7 @@ library(dbplyr)
 
 2. load and wrangle data
 ```{r}
-allsbcoants<- read_csv("newsbcoants.csv")
+allsbcoants<- read_csv("newestsbcoants.csv")
 
 
 #make df way less obnoxious
@@ -39,7 +39,11 @@ antsncos<-antssimple %>%
 #excluded anything that doesnt have UCSB Arthropod Survey
   filter(recordedBy =="UCSB Arthropod Survey")%>%
 #exluded anything that doesn't have a genera level determination
-  filter(scientificName !="Formicidae")
+  filter(scientificName !="Formicidae")%>%
+#filters out Monomorium not identified to species
+  filter(scientificName !="Monomorium")%>%
+#filters out Temnothorax not identified to species
+  filter(scientificName !="Temnothorax")
 
 #Filters out ants not identified to genus
 antssimplegenera<-antssimple%>%
@@ -100,7 +104,8 @@ scinameabund<- ggplot(mutate
         panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.line = element_line(colour = "black"),
+        axis.line.x = element_line(colour = "white"),
+        axis.line.y = element_line(color = "black"),
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+
@@ -130,18 +135,14 @@ habant
 #######################################################################################
 #Histogram of ant occurences and genus
 
-ggplot(antssimplegenera, aes(x = year, fill=scientificName)) +
-      geom_histogram(position = "identity", binwidth=0.5, na.rm = FALSE, show.legend = FALSE)+
+ggplot(antssimplegenera, aes(x = year)) +
+      geom_histogram(position = "identity", binwidth=0.75, na.rm = FALSE, show.legend = FALSE, fill="mediumorchid4")+
   theme_bw()+
   theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.line = element_line(colour = "black"),
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())+
-  labs(x= "Year Collected", y= "Number of Occurences", title = "Specimens Collected in Last 70 years (1949-2019)")+
-  scale_y_continuous(expand = c(0,0), limits = c(0,150))
+        axis.line = element_line(color = "black"))+
+  labs(x= "Year Collected", y= "Number of Occurences", title = "Specimens Collected in Last 70 years (1949-2019)")
 
 #######################################################################################
 
